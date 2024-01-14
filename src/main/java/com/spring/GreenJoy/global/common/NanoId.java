@@ -1,5 +1,6 @@
-package com.spring.GreenJoy.global.utils;
+package com.spring.GreenJoy.global.common;
 
+import com.aventrix.jnanoid.jnanoid.NanoIdUtils;
 import jakarta.persistence.Embeddable;
 import lombok.*;
 

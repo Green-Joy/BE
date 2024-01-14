@@ -1,6 +1,7 @@
 package com.spring.GreenJoy.domain.user.entity;
 
 import com.spring.GreenJoy.global.common.BaseTime;
+import com.spring.GreenJoy.global.common.NanoId;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,18 +14,13 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 public class User extends BaseTime {
 
-    //유저 인덱스
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId", nullable = false, updatable = false)
-    private Long userId;
+    @EmbeddedId
+    @AttributeOverride(name ="id", column = @Column(name = "user_id"))
+    private NanoId userId;
 
     // 아이디
     @Column(nullable = false, length = 45)
     private String id;
-
-    @Column(nullable = false)
-    private String uuid;
 
     @Column(nullable = false, length = 45)
     private String email;
@@ -54,7 +50,7 @@ public class User extends BaseTime {
     }
 
     @Builder
-    public User(String id, String uuid, String email, String password, String name, String nickname,
+    public User(String id, String email, String password, String name, String nickname,
                 String profileImg, Role role){
         this.id = id;
         this.email = email;
@@ -64,7 +60,6 @@ public class User extends BaseTime {
         this.profileImg = profileImg;
         this.role = role;
         // TODO: UUID?
-        this.uuid = uuid;
     }
 
 }
