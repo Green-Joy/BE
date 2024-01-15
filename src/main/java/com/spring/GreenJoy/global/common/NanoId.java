@@ -15,14 +15,27 @@ public class NanoId implements Serializable {
     @Setter(AccessLevel.PRIVATE)
     private String id;
 
+    /**
+     * NanoId: generate
+     * @return
+     */
     public static NanoId makeId() {
         return new NanoId(NanoIdUtils.randomNanoId());
     }
 
+    /**
+     * NanoId: from String
+     * @param id
+     * @return
+     */
     public static NanoId of(String id) {
         return new NanoId(id);
     }
 
+    /**
+     * NanoId: to String
+     * @return
+     */
     @Override
     public String toString(){
         return id;
