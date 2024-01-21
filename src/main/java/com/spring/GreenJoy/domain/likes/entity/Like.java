@@ -1,4 +1,4 @@
-package com.spring.GreenJoy.domain.likes;
+package com.spring.GreenJoy.domain.likes.entity;
 
 import com.spring.GreenJoy.domain.post.entity.Post;
 import com.spring.GreenJoy.domain.user.entity.User;

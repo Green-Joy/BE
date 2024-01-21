@@ -1,6 +1,7 @@
 package com.spring.GreenJoy.domain.likes;
 
 import com.spring.GreenJoy.domain.likes.dto.LikeRequest;
+import com.spring.GreenJoy.domain.likes.entity.Like;
 import com.spring.GreenJoy.domain.post.PostRepository;
 import com.spring.GreenJoy.domain.post.entity.Post;
 import com.spring.GreenJoy.domain.user.UserRepository;
