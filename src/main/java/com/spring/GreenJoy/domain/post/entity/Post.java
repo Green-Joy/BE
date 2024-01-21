@@ -34,6 +34,7 @@ public class Post extends BaseTime {
     private Integer likeCount;
 
     @ManyToOne
+    @JoinColumn(name = "user_id")
     private User user;
 
 }
