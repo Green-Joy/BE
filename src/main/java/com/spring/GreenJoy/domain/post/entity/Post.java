@@ -4,6 +4,7 @@ import com.spring.GreenJoy.domain.user.entity.User;
 import com.spring.GreenJoy.global.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -28,6 +29,9 @@ public class Post extends BaseTime {
     private String image2;
 
     private String image3;
+
+    @ColumnDefault("0")
+    private Integer likeCount;
 
     @ManyToOne
     private User user;
