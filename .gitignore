@@ -8,6 +8,8 @@ build/
 ### Project Files ###
 *.properties
 *.yml
+src/main/resources/serviceAccountKey.json
+src/main/java/com/spring/GreenJoy/config/jwt
 
 ### STS ###
 .apt_generated
