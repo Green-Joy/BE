@@ -2,7 +2,9 @@ package com.spring.GreenJoy.domain.user.entity;
 
 import com.spring.GreenJoy.global.common.BaseTime;
 import com.spring.GreenJoy.global.common.NanoId;
+import com.spring.GreenJoy.global.common.Role;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,7 +12,7 @@ import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Table(name = "Users")
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class User extends BaseTime {
 
@@ -43,11 +45,7 @@ public class User extends BaseTime {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 10)
-    protected Role role = Role.MEMBER;
-
-    public enum Role {
-        ADMIN, MEMBER
-    }
+    private Role role;
 
     @Builder
     public User(String id, String email, String password, String name, String nickname,
@@ -60,6 +58,17 @@ public class User extends BaseTime {
         this.profileImg = profileImg;
         this.role = role;
         // TODO: UUID?
+    }
+
+    public User update(String name, String profileImg) {
+        this.name = name;
+        this.profileImg = profileImg;
+
+        return this;
+    }
+
+    public String getRoleKey() {
+        return this.role.getKey();
     }
 
 }
