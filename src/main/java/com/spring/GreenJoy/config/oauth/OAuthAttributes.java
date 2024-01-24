@@ -1,6 +1,7 @@
 package com.spring.GreenJoy.config.oauth;
 
 import com.spring.GreenJoy.domain.user.entity.User;
+import com.spring.GreenJoy.global.common.NanoId;
 import com.spring.GreenJoy.global.common.Role;
 import lombok.Builder;
 import lombok.Getter;
@@ -49,10 +50,14 @@ public class OAuthAttributes {
     }
 
     // User 엔티티 생성
-    public User toEntity() {
+    public User toEntity(String provider, String providerId) {
         return User.builder()
-                .name(name)
+                .userId(NanoId.makeId())
                 .email(email)
+                .name(name)
+                .nickname("TEMPNICKNAME")
+                .provider(provider)
+                .providerId(providerId)
                 .profileImg(profileImg)
                 .role(Role.USER)
                 .build();

@@ -1,6 +1,5 @@
 package com.spring.GreenJoy.config.oauth;
 
-import com.spring.GreenJoy.domain.user.dto.SessionUser;
 import com.spring.GreenJoy.domain.user.UserRepository;
 import com.spring.GreenJoy.domain.user.entity.User;
 import jakarta.servlet.http.HttpSession;
@@ -31,7 +30,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
 
         // 로그인 진행 중인 서비스를 구분
-        String registrationId = userRequest.getClientRegistration().getRegistrationId();
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        String providerId = oAuth2User.getAttribute("sub");
 
         // OAuth2 로그인 진행 시 키가 되는 필드 값(Primary Key와 같은 의미)
         // 구글의 경우 기본적으로 코드를 지원
@@ -41,13 +41,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 .getUserNameAttributeName();
 
         // OAuth2UserService를 통해 가져온 OAuth2User의 attribute 등을 담을 클래스
-        OAuthAttributes attributes = OAuthAttributes.of(registrationId, userNameAttributeName, oAuth2User.getAttributes());
+        OAuthAttributes attributes = OAuthAttributes.of(provider, userNameAttributeName, oAuth2User.getAttributes());
 
         // 사용자 저장 또는 업데이트
-        User user = saveOrUpdate(attributes);
-
-        // 세션에 사용자 정보 저장
-        httpSession.setAttribute("user", new SessionUser(user));
+        User user = saveOrUpdate(attributes, provider, providerId);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
@@ -55,12 +52,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 attributes.getNameAttributeKey());
     }
 
-    private User saveOrUpdate(OAuthAttributes attributes) {
+    private User saveOrUpdate(OAuthAttributes attributes, String provider, String providerId) {
         User user = userRepository.findByEmail(attributes.getEmail())
                 // 구글 사용자 정보 업데이트(이미 가입된 사용자) => 업데이트
                 .map(entity -> entity.update(attributes.getName(), attributes.getProfileImg()))
                 // 가입되지 않은 사용자 => User 엔티티 생성
-                .orElse(attributes.toEntity());
+                .orElse(attributes.toEntity(provider, providerId));
 
         return userRepository.save(user);
     }
