@@ -21,25 +21,36 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-                .csrf(
-                        AbstractHttpConfigurer::disable
+                .csrf(httpSecurityCsrfConfigurer ->
+                        httpSecurityCsrfConfigurer
+                                .disable()
                 )
-                .headers(
-                        (headerConfig) -> headerConfig.frameOptions(
-                                HeadersConfigurer.FrameOptionsConfig::disable
-                        )
+                .httpBasic(httpSecurityHttpBasicConfigurer ->
+                        httpSecurityHttpBasicConfigurer
+                                .disable()
                 )
-                .authorizeHttpRequests((authorizeRequest) -> authorizeRequest
-                        .requestMatchers("/posts/new", "/comments/save").hasRole(Role.USER.name())
-                        .requestMatchers("/", "/css/**", "images/**", "/js/**", "/login/*", "/logout/*", "/posts/**", "/comments/**").permitAll()
-                        .anyRequest().authenticated()
+                .formLogin(httpSecurityFormLoginConfigurer ->
+                        httpSecurityFormLoginConfigurer
+                                .disable()
                 )
-                .logout( // 로그아웃 성공 시 / 주소로 이동
-                        (logoutConfig) -> logoutConfig.logoutSuccessUrl("/")
+                .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry ->
+                        authorizationManagerRequestMatcherRegistry
+                                .requestMatchers("/", "/oauth/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                // OAuth2 로그인 기능에 대한 여러 설정
-                .oauth2Login(Customizer.withDefaults());
+                .oauth2Login(httpSecurityOAuth2LoginConfigurer ->
+                        httpSecurityOAuth2LoginConfigurer
+                                .defaultSuccessUrl("/")
+                                .userInfoEndpoint(userInfoEndpointConfig ->
+                                        userInfoEndpointConfig
+                                                .userService(customOAuth2UserService)
+                                )
+                )
+                .logout(httpSecurityLogoutConfigurer ->
+                        httpSecurityLogoutConfigurer.logoutSuccessUrl("/")
+                );
 
         return http.build();
     }
