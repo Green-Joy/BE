@@ -1,11 +1,13 @@
 package com.spring.GreenJoy.domain.post.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
 public record CreateAndUpdatePostRequest(
         String title,
         String userId,
         String content,
-        String image1,
-        String image2,
-        String image3
+        List<MultipartFile> images
 ) {
 }

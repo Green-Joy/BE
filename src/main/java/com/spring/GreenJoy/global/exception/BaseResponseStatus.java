@@ -31,7 +31,7 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_EMAIL(false,HttpStatus.BAD_REQUEST.value(),"중복된 이메일입니다."),
     FAILED_TO_LOGIN(false,HttpStatus.NOT_FOUND.value(),"없는 아이디거나 비밀번호가 틀렸습니다."),
 
-
+    IMAGE_UPLOAD_FAIL(false, HttpStatus.BAD_REQUEST.value(), "이미지 업로드에 실패하였습니다."),
 
     /**
      * 500 : Database, Server 오류
