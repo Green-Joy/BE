@@ -1,5 +1,6 @@
 package com.spring.GreenJoy.domain.post;
 
+import com.spring.GreenJoy.domain.image.ImageService;
 import com.spring.GreenJoy.domain.post.dto.CreateAndUpdatePostRequest;
 import com.spring.GreenJoy.domain.post.dto.DeletePostRequest;
 import com.spring.GreenJoy.domain.post.dto.GetPostListResponse;
@@ -15,6 +16,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -23,14 +26,32 @@ public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
 
+    private final ImageService imageService;
+
     // 피드 생성
-    public Long createPost(CreateAndUpdatePostRequest createAndUpdatePostRequest) {
+    public Long createPost(CreateAndUpdatePostRequest createAndUpdatePostRequest) throws IOException {
         User user = userRepository.findById(NanoId.of(createAndUpdatePostRequest.userId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
+
+        String image1 = null;
+        String image2 = null;
+        String image3 = null;
+
+        if(createAndUpdatePostRequest.images().size() == 1){
+            image1 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(0));
+        } else if(createAndUpdatePostRequest.images().size() == 2){
+            image1 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(0));
+            image2 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(1));
+        } else if(createAndUpdatePostRequest.images().size() == 3){
+            image1 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(0));
+            image2 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(1));
+            image3 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(2));
+        }
 
         Post post = postRepository.save(Post.builder()
                 .title(createAndUpdatePostRequest.title())
                 .content(createAndUpdatePostRequest.content())
+                .image1(image1).image2(image2).image3(image3)
                 .user(user)
                 .build());
 
@@ -67,15 +88,30 @@ public class PostService {
 
     // 피드 수정
     @Transactional
-    public Long updatePost(CreateAndUpdatePostRequest createAndUpdatePostRequest, Long postId) {
+    public Long updatePost(CreateAndUpdatePostRequest createAndUpdatePostRequest, Long postId) throws IOException {
         Post post = postRepository.findByUser_UserIdAndPostId(NanoId.of(createAndUpdatePostRequest.userId()), postId)
                 .orElseThrow(() -> new IllegalArgumentException("글을 작성한 유저가 아니거나 존재하지 않는 게시글입니다."));
 
+        String image1 = null;
+        String image2 = null;
+        String image3 = null;
+
+        if(createAndUpdatePostRequest.images().size() == 1){
+            image1 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(0));
+        } else if(createAndUpdatePostRequest.images().size() == 2){
+            image1 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(0));
+            image2 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(1));
+        } else if(createAndUpdatePostRequest.images().size() == 3){
+            image1 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(0));
+            image2 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(1));
+            image3 = imageService.uploadFiles(createAndUpdatePostRequest.images().get(2));
+        }
+
         post.setTitle(createAndUpdatePostRequest.title());
         post.setContent(createAndUpdatePostRequest.content());
-        post.setImage1(createAndUpdatePostRequest.image1());
-        post.setImage2(createAndUpdatePostRequest.image2());
-        post.setImage3(createAndUpdatePostRequest.image3());
+        post.setImage1(image1);
+        post.setImage2(image2);
+        post.setImage3(image3);
 
         postRepository.save(post);
 

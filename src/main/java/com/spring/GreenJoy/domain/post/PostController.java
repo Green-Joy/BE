@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+
 @Slf4j
 @RestController
 @RequestMapping("/api/posts")
@@ -20,7 +22,7 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping
-    public ResponseEntity<?> createPost(@RequestBody CreateAndUpdatePostRequest createAndUpdatePostRequest) {
+    public ResponseEntity<?> createPost(@ModelAttribute CreateAndUpdatePostRequest createAndUpdatePostRequest) throws IOException {
         Long postId = postService.createPost(createAndUpdatePostRequest);
         return ResponseEntity.ok().body("글 작성 성공");
     }
@@ -38,7 +40,8 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<?> updatePost(@RequestBody CreateAndUpdatePostRequest createAndUpdatePostRequest, @PathVariable("postId") Long postId) {
+    public ResponseEntity<?> updatePost(@ModelAttribute CreateAndUpdatePostRequest createAndUpdatePostRequest,
+                                        @PathVariable("postId") Long postId) throws IOException {
         Long post = postService.updatePost(createAndUpdatePostRequest, postId);
         return ResponseEntity.ok().body("게시글 수정 완료");
     }
