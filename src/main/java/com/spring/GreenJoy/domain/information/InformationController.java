@@ -33,7 +33,7 @@ public class InformationController {
     }
 
     @GetMapping("/{infoId}")
-    public ResponseEntity<?> getInfp(@PathVariable("infoId") Long infoId) {
+    public ResponseEntity<?> getInfo(@PathVariable("infoId") Long infoId) {
         GetInfoResponse info = informationService.getInfo(infoId);
         return ResponseEntity.ok().body(info);
     }
