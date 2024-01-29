@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -48,7 +49,8 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) {
-        postService.deletePost(postId);
+        String providerId = SecurityContextHolder.getContext().getAuthentication().getName();
+        postService.deletePost(postId, providerId);
         return ResponseEntity.ok().body("게시글 삭제 완료");
     }
 
