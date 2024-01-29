@@ -11,6 +11,7 @@ public class GetArticleResponse {
     private String image;
     private String title;
     private String url;
+    private String preview;
 
     public boolean validateImage() {
         return image != null && !image.isEmpty();
