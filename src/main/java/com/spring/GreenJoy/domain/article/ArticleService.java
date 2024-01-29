@@ -38,6 +38,7 @@ public class ArticleService {
                     .image(content.select("a img").attr("abs:src")) // 이미지
                     .title(content.select("h4 a").text()) // 제목
                     .url(content.select("a").attr("abs:href")) // 링크
+                    .preview(content.select("p.lead.line-6x2 a").text()) // 미리보기
                     .build();
             articleList.add(article);
         }
