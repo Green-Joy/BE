@@ -47,7 +47,9 @@ public class ImageService {
 
         // 이미지 파일 이름 생성
         String fileName = createImageName();
-        String imgUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
+        String imgUrl = fileName;
+
+        String newImgUrl = "https://storage.googleapis.com/" + bucketName + "/" + fileName;
 
         // bucket 저장
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, imgUrl)
@@ -55,7 +57,7 @@ public class ImageService {
 
         Blob blob = storage.create(blobInfo, file.getInputStream());
 
-        return imgUrl;
+        return newImgUrl;
     }
 
 }
