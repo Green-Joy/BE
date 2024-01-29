@@ -48,7 +48,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) {
+    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) throws IOException {
         String providerId = SecurityContextHolder.getContext().getAuthentication().getName();
         postService.deletePost(postId, providerId);
         return ResponseEntity.ok().body("게시글 삭제 완료");
