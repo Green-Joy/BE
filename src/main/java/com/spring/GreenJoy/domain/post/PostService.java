@@ -119,7 +119,10 @@ public class PostService {
     }
 
     // 피드 삭제
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, String providerId) {
+        User user = userRepository.findByProviderId(providerId)
+                .orElseThrow(() -> new IllegalArgumentException("로그인 한 사용자만 삭제 가능합니다."));
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
