@@ -97,7 +97,7 @@ public class ImageService {
         Boolean deleted = storage.delete(blobId);
         
         if(deleted) {
-           log.info("이미지가 성공적으로 삭제되었습니다.");
+            log.info("이미지가 성공적으로 삭제되었습니다.");
         } else {
             log.info("이미지 삭제에 실패하였습니다.");
         }
