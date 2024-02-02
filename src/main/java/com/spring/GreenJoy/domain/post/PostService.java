@@ -17,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -119,14 +122,28 @@ public class PostService {
     }
 
     // 피드 삭제
-    public void deletePost(Long postId, String providerId) {
+    public void deletePost(Long postId, String providerId) throws IOException {
         User user = userRepository.findByProviderId(providerId)
                 .orElseThrow(() -> new IllegalArgumentException("로그인 한 사용자만 삭제 가능합니다."));
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
+        List<String> imgUrlList = Arrays.asList(post.getImage1(), post.getImage2(), post.getImage3());
+        checkExistenceAndDeleteImage(imgUrlList);
+
         postRepository.delete(post);
+    }
+
+    // 피드의 이미지 삭제
+    public void checkExistenceAndDeleteImage(List<String> imgUrls) throws IOException {
+
+        for(String imgUrl: imgUrls) {
+            if (imgUrl != null && !imgUrl.isEmpty()) {
+                imageService.deleteFiles(imgUrl);
+            }
+        }
+
     }
 
     // TODO : 게시글을 작성한 유저인지 확인하는 로직, 이미지 파일 저장
