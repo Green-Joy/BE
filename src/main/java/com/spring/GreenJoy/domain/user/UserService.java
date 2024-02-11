@@ -42,7 +42,6 @@ public class UserService {
     @Transactional
     public User verify(String authCode) {
 
-        // 원래 있던 코드들
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded");
