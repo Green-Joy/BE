@@ -33,7 +33,7 @@ public class PostService {
 
     // 피드 생성
     public Long createPost(CreateAndUpdatePostRequest createAndUpdatePostRequest) throws IOException {
-        User user = userRepository.findById(NanoId.of(createAndUpdatePostRequest.userId()))
+        User user = userRepository.findByRandomId(NanoId.of(createAndUpdatePostRequest.randomId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         String image1 = null;
@@ -92,7 +92,7 @@ public class PostService {
     // 피드 수정
     @Transactional
     public Long updatePost(CreateAndUpdatePostRequest createAndUpdatePostRequest, Long postId) throws IOException {
-        Post post = postRepository.findByUser_UserIdAndPostId(NanoId.of(createAndUpdatePostRequest.userId()), postId)
+        Post post = postRepository.findByUser_RandomIdAndPostId(NanoId.of(createAndUpdatePostRequest.randomId()), postId)
                 .orElseThrow(() -> new IllegalArgumentException("글을 작성한 유저가 아니거나 존재하지 않는 게시글입니다."));
 
         String image1 = null;
@@ -122,12 +122,21 @@ public class PostService {
     }
 
     // 피드 삭제
-    public void deletePost(Long postId, String userId) throws IOException {
-        User user = userRepository.findByUserId(NanoId.of(userId))
-                .orElseThrow(() -> new IllegalArgumentException("로그인 한 사용자만 삭제 가능합니다."));
-
+    public void deletePost(Long postId, DeletePostRequest deletePostRequest) throws IOException {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+
+        // 글을 작성한 사용자
+        User postUser = userRepository.findByUserId(post.getUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 글을 삭제할려고 요청한 사용자
+        User user = userRepository.findByRandomId(NanoId.of(deletePostRequest.randomId()))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (postUser.getUserId() != user.getUserId()) {
+            throw new IllegalArgumentException("글을 작성한 사용자만 삭제할 수 있습니다.");
+        }
 
         List<String> imgUrlList = Arrays.asList(post.getImage1(), post.getImage2(), post.getImage3());
         checkExistenceAndDeleteImage(imgUrlList);
@@ -145,6 +154,4 @@ public class PostService {
         }
 
     }
-
-    // TODO : 게시글을 작성한 유저인지 확인하는 로직, 이미지 파일 저장
 }

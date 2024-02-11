@@ -1,6 +1,7 @@
 package com.spring.GreenJoy.domain.post;
 
 import com.spring.GreenJoy.domain.post.dto.CreateAndUpdatePostRequest;
+import com.spring.GreenJoy.domain.post.dto.DeletePostRequest;
 import com.spring.GreenJoy.domain.post.dto.GetPostListResponse;
 import com.spring.GreenJoy.domain.post.dto.GetPostResponse;
 import com.spring.GreenJoy.domain.post.entity.Post;
@@ -47,10 +48,9 @@ public class PostController {
         return ResponseEntity.ok().body("게시글 수정 완료");
     }
 
-    @DeleteMapping("/{postId}")
-    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId) throws IOException {
-        String providerId = SecurityContextHolder.getContext().getAuthentication().getName();
-        postService.deletePost(postId, providerId);
+    @PostMapping("/{postId}")
+    public ResponseEntity<?> deletePost(@PathVariable("postId") Long postId, @RequestBody DeletePostRequest deletePostRequest) throws IOException {
+        postService.deletePost(postId, deletePostRequest);
         return ResponseEntity.ok().body("게시글 삭제 완료");
     }
 
