@@ -67,7 +67,7 @@ public class PostService {
 
         return postPage.map(post -> GetPostListResponse.builder()
                 .title(post.getTitle())
-                .writer(post.getUser().getNickname())
+                .writer(post.getUser().getName())
                 .content(post.getContent())
                 .thumbnail(post.getImage1())
                 .build());
@@ -80,7 +80,7 @@ public class PostService {
 
         return GetPostResponse.builder()
                 .title(post.getTitle())
-                .writer(post.getUser().getNickname())
+                .writer(post.getUser().getName())
                 .content(post.getContent())
                 .updatedAt(post.getUpdatedAt())
                 .image1(post.getImage1())
@@ -122,8 +122,8 @@ public class PostService {
     }
 
     // 피드 삭제
-    public void deletePost(Long postId, String providerId) throws IOException {
-        User user = userRepository.findByProviderId(providerId)
+    public void deletePost(Long postId, String userId) throws IOException {
+        User user = userRepository.findByUserId(NanoId.of(userId))
                 .orElseThrow(() -> new IllegalArgumentException("로그인 한 사용자만 삭제 가능합니다."));
 
         Post post = postRepository.findById(postId)

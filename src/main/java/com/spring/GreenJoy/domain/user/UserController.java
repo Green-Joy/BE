@@ -1,14 +1,16 @@
 package com.spring.GreenJoy.domain.user;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.GreenJoy.domain.user.dto.GetUserInfoResponse;
 import com.spring.GreenJoy.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -20,16 +22,24 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping
-    public ResponseEntity<?> getUserProfile(@AuthenticationPrincipal OAuth2User oAuth2User) {
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody String authCode) throws JsonProcessingException {
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = objectMapper.readTree(authCode);
+        String extractedAuthCode = jsonNode.get("authCode").asText();
 
-        String email = (String) attributes.get("email");
+        User user = userService.verify(extractedAuthCode);
 
-        User user = userService.getUserInfo(email);
+        return ResponseEntity.ok().body(user.getRandomId());
+    }
 
-        return ResponseEntity.ok().body(user.toString());
+    @GetMapping("/{randomId}")
+    public ResponseEntity<?> getUserInfo(@PathVariable("randomId") String randomId) {
+
+        GetUserInfoResponse user = userService.getUserInfo(randomId);
+
+        return ResponseEntity.ok().body(user);
     }
 
 }
