@@ -62,7 +62,7 @@ public class InformationService {
 
         return infoPage.map(info -> GetInfoListResponse.builder()
                 .title(info.getTitle())
-                .writer(info.getUser().getNickname())
+                .writer(info.getUser().getName())
                 .content(info.getContent())
                 .thumbnail(info.getImage1())
                 .build());
@@ -75,7 +75,7 @@ public class InformationService {
 
         return GetInfoResponse.builder()
                 .title(info.getTitle())
-                .writer(info.getUser().getNickname())
+                .writer(info.getUser().getName())
                 .content(info.getContent())
                 .updatedAt(info.getUpdatedAt())
                 .image1(info.getImage1())

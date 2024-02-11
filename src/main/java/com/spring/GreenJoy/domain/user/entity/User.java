@@ -14,11 +14,15 @@ import org.hibernate.annotations.ColumnDefault;
 @AllArgsConstructor
 @Entity
 @ToString
+@Setter
 public class User extends BaseTime {
 
     @EmbeddedId
     @AttributeOverride(name ="id", column = @Column(name = "user_id"))
     private NanoId userId;
+
+    @AttributeOverride(name ="id", column = @Column(name = "random_id"))
+    private NanoId randomId;
 
     @Column(nullable = false, length = 45)
     private String email;
@@ -26,23 +30,12 @@ public class User extends BaseTime {
     @Column(nullable = false, length = 20)
     private String name;
 
-    @Column(nullable = false, length = 20)
-    private String nickname;
-
     @Column(columnDefinition = "TEXT")
     private String profileImg;
-
-    @Column(columnDefinition = "int unsigned")
-    @ColumnDefault("0")
-    private int credit;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false, length = 10)
     private Role role;
-
-    private String provider;
-
-    private String providerId;
 
     public User update(String name, String profileImg) {
         this.name = name;
