@@ -39,6 +39,7 @@ public class UserService {
     private static final String GOOGLE_TOKEN_SERVER_URL = "https://oauth2.googleapis.com/token";
     private static final String GOOGLE_USERINFO_SERVER_URL = "https://www.googleapis.com/oauth2/v1/userinfo";
 
+
     @Transactional
     public User verify(String authCode) {
 
@@ -68,22 +69,26 @@ public class UserService {
 
             // 데이터베이스에서 사용자 조회
             Optional<User> existingUser = userRepository.findByEmail(user.getEmail());
+
             if (existingUser.isPresent()) {
+                // 최초 로그인이 아닌 경우
                 existingUser.get().setRandomId(NanoId.makeId());
                 userRepository.save(existingUser.get());
             } else {
+                // 최초 로그인일 경우
                 user.setUserId(NanoId.makeId());
                 user.setRandomId(NanoId.makeId());
                 user.setRole(Role.USER);
                 userRepository.save(user);
             }
-
-            System.out.println(user.toString());
         } catch (Exception e) {
             throw new IllegalArgumentException("Invalid access token", e);
         }
 
-        return user;
+        User getUser = userRepository.findByEmail(user.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+
+        return getUser;
     }
 
     public GetUserInfoResponse getUserInfo(String randomId) {
