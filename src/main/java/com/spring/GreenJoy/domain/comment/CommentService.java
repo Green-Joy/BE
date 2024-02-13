@@ -28,7 +28,7 @@ public class CommentService {
 
     // 댓글 생성
     public Long createComment(CreateCommentRequest createCommentRequest) {
-        User user = userRepository.findById(NanoId.of(createCommentRequest.userId()))
+        User user = userRepository.findByRandomId(NanoId.of(createCommentRequest.randomId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
         Post post = postRepository.findById(createCommentRequest.postId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -57,8 +57,8 @@ public class CommentService {
     // 댓글 수정
     @Transactional
     public Long updateComment(Long commentId, UpdateCommentRequest updateCommentRequest) {
-        Comment comment = commentRepository.findByUser_UserId(NanoId.of(updateCommentRequest.userId()))
-                .orElseThrow(() -> new IllegalArgumentException("댓글을 작성한 유저가 아닙니다."));
+        Comment comment = commentRepository.findByUser_RandomIdAndCommentId(NanoId.of(updateCommentRequest.randomId()), commentId)
+                .orElseThrow(() -> new IllegalArgumentException("글을 작성한 유저가 아니거나 존재하지 않는 댓글입니다."));
 
         comment.setContent(updateCommentRequest.content());
 
@@ -68,13 +68,22 @@ public class CommentService {
     }
 
     // 댓글 삭제
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, DeleteCommentRequest deleteCommentRequest) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
 
+        // 댓글을 작성한 사용자
+        User commentUser = userRepository.findByUserId(comment.getUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 댓글을 삭제하려고 요청한 사용자
+        User user = userRepository.findByRandomId(NanoId.of(deleteCommentRequest.randomId()))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (commentUser.getUserId() != user.getUserId()) {
+            throw new IllegalArgumentException("댓글을 작성한 사용자만 삭제할 수 있습니다.");
+        }
+
         commentRepository.deleteById(comment.getCommentId());
     }
-
-    // TODO : 게시글을 작성한 유저인지 확인하는 로직
-
 }
