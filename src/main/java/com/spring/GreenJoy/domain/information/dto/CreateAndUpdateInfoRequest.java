@@ -6,7 +6,7 @@ import java.util.List;
 
 public record CreateAndUpdateInfoRequest(
         String title,
-        String userId,
+        String randomId,
         String content,
         List<MultipartFile> images
 ) {
