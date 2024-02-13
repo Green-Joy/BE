@@ -4,7 +4,7 @@ import lombok.Builder;
 
 @Builder
 public record LikeRequest(
-        String userId,
+        String randomId,
         Long postId
 ) {
 }

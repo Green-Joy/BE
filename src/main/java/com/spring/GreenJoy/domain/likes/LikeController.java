@@ -14,13 +14,13 @@ public class LikeController {
 
     private final LikeService likeService;
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<?> createLike(@RequestBody LikeRequest likeRequest) throws Exception {
         likeService.createLike(likeRequest);
         return ResponseEntity.ok().body("좋아요 생성");
     }
 
-    @DeleteMapping
+    @PostMapping("/remove")
     public ResponseEntity<?> deleteLike(@RequestBody LikeRequest likeRequest) throws Exception {
         likeService.deleteLike(likeRequest);
         return ResponseEntity.ok().body("좋아요 삭제");
