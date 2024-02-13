@@ -21,7 +21,7 @@ public class LikeService {
     private final LikeRepository likeRepository;
 
     public void createLike(LikeRequest likeRequest) throws Exception {
-        User user = userRepository.findById(NanoId.of(likeRequest.userId()))
+        User user = userRepository.findByRandomId(NanoId.of(likeRequest.randomId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Post post = postRepository.findById(likeRequest.postId())
@@ -29,7 +29,7 @@ public class LikeService {
 
         // 이미 좋아요 한 경우라면
         if (likeRepository.findByUserAndPost(user, post).isPresent()) {
-            throw new Exception();
+            throw new Exception("이미 좋아요 한 게시물입니다.");
         }
 
         post.setLikeCount(post.getLikeCount() + 1);
@@ -43,7 +43,7 @@ public class LikeService {
     }
 
     public void deleteLike(LikeRequest likeRequest) throws Exception {
-        User user = userRepository.findById(NanoId.of(likeRequest.userId()))
+        User user = userRepository.findByRandomId(NanoId.of(likeRequest.randomId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         Post post = postRepository.findById(likeRequest.postId())
