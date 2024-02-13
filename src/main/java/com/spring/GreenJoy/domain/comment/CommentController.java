@@ -1,6 +1,7 @@
 package com.spring.GreenJoy.domain.comment;
 
 import com.spring.GreenJoy.domain.comment.dto.CreateCommentRequest;
+import com.spring.GreenJoy.domain.comment.dto.DeleteCommentRequest;
 import com.spring.GreenJoy.domain.comment.dto.GetCommentListResponse;
 import com.spring.GreenJoy.domain.comment.dto.UpdateCommentRequest;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +37,9 @@ public class CommentController {
         return ResponseEntity.ok().body("댓글 수정 성공");
     }
 
-    @DeleteMapping("/{commentId}")
-    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId) {
-        commentService.deleteComment(commentId);
+    @PostMapping("/{commentId}")
+    public ResponseEntity<?> deleteComment(@PathVariable("commentId") Long commentId, @RequestBody DeleteCommentRequest deleteCommentRequest) {
+        commentService.deleteComment(commentId, deleteCommentRequest);
         return ResponseEntity.ok().body("댓글 삭제 성공");
     }
 }
