@@ -5,6 +5,7 @@ import com.spring.GreenJoy.global.common.BaseTime;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.DynamicInsert;
 
 @Getter
 @Setter
@@ -13,6 +14,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Builder
 @Table(name = "Posts")
 @Entity
+@DynamicInsert
 public class Post extends BaseTime {
 
     @Id
@@ -31,7 +33,7 @@ public class Post extends BaseTime {
     private String image3;
 
     @ColumnDefault("0")
-    private Integer likeCount;
+    private Long likeCount;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
