@@ -1,6 +1,7 @@
 package com.spring.GreenJoy.domain.information;
 
 import com.spring.GreenJoy.domain.information.dto.CreateAndUpdateInfoRequest;
+import com.spring.GreenJoy.domain.information.dto.DeleteInfoRequest;
 import com.spring.GreenJoy.domain.information.dto.GetInfoListResponse;
 import com.spring.GreenJoy.domain.information.dto.GetInfoResponse;
 import lombok.RequiredArgsConstructor;
@@ -45,9 +46,9 @@ public class InformationController {
         return ResponseEntity.ok().body("게시글 수정 완료");
     }
 
-    @DeleteMapping("/{infoId}")
-    public ResponseEntity<?> deleteInfo(@PathVariable("infoId") Long infoId) {
-        informationService.deleteInfo(infoId);
+    @PostMapping("/{infoId}")
+    public ResponseEntity<?> deleteInfo(@PathVariable("infoId") Long infoId, @RequestBody DeleteInfoRequest deleteInfoRequest) throws IOException {
+        informationService.deleteInfo(infoId, deleteInfoRequest);
         return ResponseEntity.ok().body("게시글 삭제 완료");
     }
 

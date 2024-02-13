@@ -2,6 +2,7 @@ package com.spring.GreenJoy.domain.information;
 
 import com.spring.GreenJoy.domain.image.ImageService;
 import com.spring.GreenJoy.domain.information.dto.CreateAndUpdateInfoRequest;
+import com.spring.GreenJoy.domain.information.dto.DeleteInfoRequest;
 import com.spring.GreenJoy.domain.information.dto.GetInfoListResponse;
 import com.spring.GreenJoy.domain.information.dto.GetInfoResponse;
 import com.spring.GreenJoy.domain.information.entity.Information;
@@ -16,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -28,7 +31,7 @@ public class InformationService {
 
     // 꿀팁 생성
     public Long createInfo(CreateAndUpdateInfoRequest createAndUpdateInfoRequest) throws IOException {
-        User user = userRepository.findById(NanoId.of(createAndUpdateInfoRequest.userId()))
+        User user = userRepository.findByRandomId(NanoId.of(createAndUpdateInfoRequest.randomId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         String image1 = null;
@@ -87,7 +90,7 @@ public class InformationService {
     // 꿀팁 수정
     @Transactional
     public Long updateInfo(CreateAndUpdateInfoRequest createAndUpdateInfoRequest, Long infoId) throws IOException {
-        Information info = informationRepository.findByUser_UserIdAndInfoId(NanoId.of(createAndUpdateInfoRequest.userId()), infoId)
+        Information info = informationRepository.findByUser_RandomIdAndInfoId(NanoId.of(createAndUpdateInfoRequest.randomId()), infoId)
                 .orElseThrow(() -> new IllegalArgumentException("글을 작성한 유저가 아니거나 존재하지 않는 게시글입니다."));
 
         String image1 = null;
@@ -117,11 +120,36 @@ public class InformationService {
     }
 
     // 꿀팁 삭제
-    public void deleteInfo(Long infoId) {
+    public void deleteInfo(Long infoId, DeleteInfoRequest deleteInfoRequest) throws IOException {
         Information info = informationRepository.findById(infoId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 
+        // 꿀팁을 작성한 사용자
+        User infoUser = userRepository.findByUserId(info.getUser().getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        // 꿀팁을 삭제하려고 요청한 사용자
+        User user = userRepository.findByRandomId(NanoId.of(deleteInfoRequest.randomId()))
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        if (infoUser.getUserId() != user.getUserId()) {
+            throw new IllegalArgumentException("글을 작성한 사용자만 삭제할 수 있습니다.");
+        }
+
+        List<String> imgUrlList = Arrays.asList(info.getImage1(), info.getImage2(), info.getImage3());
+        checkExistenceAndDeleteImage(imgUrlList);
+
         informationRepository.delete(info);
+    }
+
+    public void checkExistenceAndDeleteImage(List<String> imgUrls) throws IOException {
+
+        for(String imgUrl: imgUrls) {
+            if (imgUrl != null && !imgUrl.isEmpty()) {
+                imageService.deleteFiles(imgUrl);
+            }
+        }
+
     }
 
 }
