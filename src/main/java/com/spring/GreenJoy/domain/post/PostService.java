@@ -70,6 +70,7 @@ public class PostService {
                 .writer(post.getUser().getName())
                 .content(post.getContent())
                 .thumbnail(post.getImage1())
+                .likeCount(post.getLikeCount())
                 .build());
     }
 
@@ -86,6 +87,7 @@ public class PostService {
                 .image1(post.getImage1())
                 .image2(post.getImage2())
                 .image3(post.getImage3())
+                .likeCount(post.getLikeCount())
                 .build();
     }
 

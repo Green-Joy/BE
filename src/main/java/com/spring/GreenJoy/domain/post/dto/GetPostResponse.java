@@ -12,6 +12,7 @@ public record GetPostResponse(
         LocalDateTime updatedAt,
         String image1,
         String image2,
-        String image3
+        String image3,
+        Long likeCount
 ) {
 }
