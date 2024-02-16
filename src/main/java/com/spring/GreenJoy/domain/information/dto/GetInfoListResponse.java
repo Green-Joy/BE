@@ -7,7 +7,8 @@ public record GetInfoListResponse(
         String title,
         String writer,
         String content,
-        String thumbnail
+        String thumbnail,
+        Long infoId
 
 ) {
 }
