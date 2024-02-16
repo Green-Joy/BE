@@ -51,6 +51,7 @@ public class CommentService {
                 .content(comment.getContent())
                 .writer(comment.getUser().getName())
                 .updatedAt(comment.getUpdatedAt())
+                .commentId(comment.getCommentId())
                 .build());
     }
 

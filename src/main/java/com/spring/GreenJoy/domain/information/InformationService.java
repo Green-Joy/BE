@@ -68,6 +68,7 @@ public class InformationService {
                 .writer(info.getUser().getName())
                 .content(info.getContent())
                 .thumbnail(info.getImage1())
+                .infoId(info.getInfoId())
                 .build());
     }
 

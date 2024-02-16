@@ -8,7 +8,8 @@ public record GetPostListResponse(
         String writer,
         String content,
         String thumbnail,
-        Long likeCount
+        Long likeCount,
+        Long postId
 
 ) {
 }

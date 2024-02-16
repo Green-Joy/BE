@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record GetCommentListResponse(
         String content,
         String writer,
-        LocalDateTime updatedAt
+        LocalDateTime updatedAt,
+        Long commentId
 ) {
 }
