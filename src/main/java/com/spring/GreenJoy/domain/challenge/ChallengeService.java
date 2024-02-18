@@ -41,7 +41,7 @@ public class ChallengeService {
     public String createTodayChallenge() {
         List<User> userList  = userRepository.findAll();
 
-        String todayChallenge = getTodayChallenge();
+        String todayChallenge = getRandomChallenge();
         LocalDate todayDate = LocalDate.now();
 
         for(User user : userList){
@@ -59,10 +59,10 @@ public class ChallengeService {
     }
 
     /**
-     * 오늘의 챌린지 생성: getter
+     * 오늘의 챌린지 랜덤 생성
      * @return 오늘의 챌린지
      */
-    private static String getTodayChallenge() {
+    private static String getRandomChallenge() {
         List<String> todayChallengeList = Arrays.asList(
                 "텀블러 사용하기", "자전거 또는 대중교통 이용하기", "쓰레기 분리수거하기",
                 "지역 농산물 구매하기", "종이 사용 줄이기 (디지털 문서 사용하기)",
@@ -73,7 +73,28 @@ public class ChallengeService {
         );
 
         Random random = new Random();
-        String todayChallenge = todayChallengeList.get(random.nextInt(todayChallengeList.size()));
+
+        return todayChallengeList.get(random.nextInt(todayChallengeList.size()));
+    }
+
+    /**
+     * 오늘의 챌린지 가져오기
+     * @return 오늘의 챌린지
+     */
+    public String getTodayChallenge() {
+        LocalDate todayDate = LocalDate.now();
+        List<Challenge> challengeList = challengeRepository.findAllByChallengeDateAndActive(todayDate, false);
+
+        String todayChallenge = null;
+
+        if(!challengeList.isEmpty()) {
+            Challenge lastChallenge = challengeList.get(0);
+            todayChallenge = lastChallenge.getTitle();
+
+            log.info("오늘의 챌린지는: " + todayChallenge);
+        } else {
+            return "아직 오늘의 챌린지가 정해지지 않았습니다. 잠시 후 다시 시도해주세요.";
+        }
 
         return todayChallenge;
     }

@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface ChallengeRepository extends JpaRepository<Challenge, Long> {
 
     Optional<Challenge> findByChallengeDateAndActiveOrderByCreatedAtDesc(LocalDate todayDate, boolean active);
+    List<Challenge> findAllByChallengeDateAndActive(LocalDate todayDate, boolean active);
     List<Challenge> findAllByChallengeDateAndActiveOrderByCreatedAtDesc(LocalDate todayDate, boolean active);
     Page<Challenge> findByUser_UserIdOrderByCreatedAtDesc(NanoId randomId, Pageable pageable);
 

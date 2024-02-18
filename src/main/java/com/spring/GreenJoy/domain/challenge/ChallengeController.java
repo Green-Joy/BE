@@ -21,9 +21,15 @@ public class ChallengeController {
 
     private final ChallengeService challengeService;
 
+//    @GetMapping("/today")
+//    public ResponseEntity<?> createTodayChallenge() {
+//        String todayChallenge = challengeService.createTodayChallenge();
+//        return ResponseEntity.ok().body(todayChallenge.getBytes(StandardCharsets.UTF_8));
+//    }
+
     @GetMapping("/today")
     public ResponseEntity<?> createTodayChallenge() {
-        String todayChallenge = challengeService.createTodayChallenge();
+        String todayChallenge = challengeService.getTodayChallenge();
         return ResponseEntity.ok().body(todayChallenge.getBytes(StandardCharsets.UTF_8));
     }
 
