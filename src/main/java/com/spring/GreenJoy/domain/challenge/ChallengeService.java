@@ -103,7 +103,7 @@ public class ChallengeService {
      * 오늘의 챌린지 인증 (USER)
      */
     public String certifyChallenge(CreateAndUpdateChallengeRequest createAndUpdateChallengeRequest) throws IOException {
-        User user = userRepository.findById(NanoId.of(createAndUpdateChallengeRequest.randomId()))
+        User user = userRepository.findByRandomId(NanoId.of(createAndUpdateChallengeRequest.randomId()))
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 회원입니다."));
 
         LocalDate todayDate = LocalDate.now();
@@ -141,13 +141,13 @@ public class ChallengeService {
      * 챌린지 전체 조회(페이징)
      */
     public Page<GetChallengeListResponse> getChallengeList(String randomId, Pageable pageable) {
-        Page<Challenge> challengePage = challengeRepository.findByUser_UserIdOrderByCreatedAtDesc(NanoId.of(randomId), pageable);
+        Page<Challenge> challengePage = challengeRepository.findByUser_RandomIdOrderByCreatedAtDesc(NanoId.of(randomId), pageable);
 
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         return challengePage.map(challenge -> GetChallengeListResponse.builder()
                 .title(challenge.getTitle())
-                // .writer(challenge.getUser().getNickname())
+                // .writer(String.valueOf(challenge.getUser().getRandomId()))
                 // .content(challenge.getContent())
                 .thumbnail(challenge.getImage())
                 .challengeDate(challenge.getCreatedAt().format(dateTimeFormatter))
@@ -165,7 +165,7 @@ public class ChallengeService {
 
         return GetChallengeResponse.builder()
                 .title(challenge.getTitle())
-                //.writer(challenge.getUser().getName())
+                //.writer(String.valueOf(challenge.getUser().getRandomId()))
                 .content(challenge.getContent())
                 .thumbnail(challenge.getImage())
                 .challengeDate(challenge.getCreatedAt().format(dateTimeFormatter))
