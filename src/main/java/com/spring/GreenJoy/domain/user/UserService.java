@@ -57,7 +57,6 @@ public class UserService {
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(params, headers);
 
         ResponseEntity<OAuthResponse> response = restTemplate.postForEntity(GOOGLE_TOKEN_SERVER_URL, request, OAuthResponse.class);
-        System.out.println(response.getBody());
 
         String accessToken = response.getBody().getAccess_token();
 
@@ -65,6 +64,9 @@ public class UserService {
         try {
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(GOOGLE_USERINFO_SERVER_URL)
                     .queryParam("access_token", accessToken);
+            ResponseEntity<String> userInfoResponse = restTemplate.getForEntity(builder.toUriString(), String.class);
+            JSONObject userInfoJson = new ObjectMapper().readValue(userInfoResponse.getBody(), JSONObject.class);
+            String profileImgUrl = (String) userInfoJson.get("picture");
             user = restTemplate.getForObject(builder.toUriString(), User.class);
 
             // 데이터베이스에서 사용자 조회
@@ -73,12 +75,14 @@ public class UserService {
             if (existingUser.isPresent()) {
                 // 최초 로그인이 아닌 경우
                 existingUser.get().setRandomId(NanoId.makeId());
+                existingUser.get().setProfileImg(profileImgUrl);
                 userRepository.save(existingUser.get());
             } else {
                 // 최초 로그인일 경우
                 user.setUserId(NanoId.makeId());
                 user.setRandomId(NanoId.makeId());
                 user.setRole(Role.USER);
+                user.setProfileImg(profileImgUrl);
                 userRepository.save(user);
             }
         } catch (Exception e) {
