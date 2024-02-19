@@ -72,6 +72,7 @@ public class PostService {
                 .thumbnail(post.getImage1())
                 .likeCount(post.getLikeCount())
                 .postId(post.getPostId())
+                .profileImg(post.getUser().getProfileImg())
                 .build());
     }
 
