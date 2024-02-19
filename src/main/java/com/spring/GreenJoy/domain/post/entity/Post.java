@@ -1,5 +1,7 @@
 package com.spring.GreenJoy.domain.post.entity;
 
+import com.spring.GreenJoy.domain.comment.entity.Comment;
+import com.spring.GreenJoy.domain.likes.entity.Like;
 import com.spring.GreenJoy.domain.user.entity.User;
 import com.spring.GreenJoy.global.common.BaseTime;
 import jakarta.persistence.*;
@@ -8,6 +10,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,5 +46,11 @@ public class Post extends BaseTime {
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Like> likeList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
+    private List<Comment> commentList = new ArrayList<>();
 
 }

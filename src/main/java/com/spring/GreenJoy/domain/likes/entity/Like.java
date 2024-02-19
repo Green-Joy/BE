@@ -22,7 +22,6 @@ public class Like {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     @ManyToOne
