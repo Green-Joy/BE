@@ -9,7 +9,8 @@ public record GetPostListResponse(
         String content,
         String thumbnail,
         Long likeCount,
-        Long postId
+        Long postId,
+        String profileImg
 
 ) {
 }
